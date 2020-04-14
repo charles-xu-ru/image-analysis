@@ -1,0 +1,17 @@
+install.packages("ggplot2")
+install.packages("tidyr")
+install.packages("extrafont")
+library(extrafont)
+library(ggplot2)
+library(tidyr)
+rm(list = ls())
+setwd("/Users/charlesxu/Documents")
+PXo<-read.csv("PXo size.csv", sep=",", header=TRUE)
+PXo.plot <- ggplot(data = PXo, aes(x = group, y = size, fill= treatment)) +
+   geom_violin(trim = FALSE, adjust = 0.5, scale = "count") + 
+  geom_point(stat="summary", fun.y="mean", shape=20, size=1.5) +
+  labs(x="treatment", y="PXo size") +
+  theme(text = element_text(family="Arial", size=19, face = "bold"), axis.text.x = element_text(size = 15, color = "black"), axis.text.y = element_text(size = 15, color = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+           panel.background = element_blank(), axis.line = element_line(colour = "black", size = 2))
+print(PXo.plot)
+
