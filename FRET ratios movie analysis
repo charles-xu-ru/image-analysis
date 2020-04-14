@@ -1,0 +1,30 @@
+dir = getDirectory("image"); 
+name = getTitle; 
+index = lastIndexOf(name, "."); 
+if (index!=-1) name = substring(name, 0, index); 
+nameE = name + ".xls";
+
+run("Set Measurements...", "area mean integrated stack redirect=None decimal=2");
+//run("Z Project...", "projection=[Max Intensity] all");
+getDimensions(dummy, dummy, dummy, nSlice, dummy);
+
+
+arraySum=newArray(nSlice);
+
+for(j=0;j<nSlice; j++) { 
+
+arraySum[j]=0;
+
+arraySum[j]=arraySum[j]+getResult("Mean", j);
+
+}
+
+//Array.print(arraySum); 
+//Array.print(arraySumNum); 
+
+
+// roiManager("Show All without labels");
+
+saveAs("Measurements", dir+nameE);
+
+
