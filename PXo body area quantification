@@ -1,0 +1,56 @@
+dir = getDirectory("image"); 
+name = getTitle; 
+index = lastIndexOf(name, "."); 
+if (index!=-1) name = substring(name, 0, index); 
+name = name + ".xls";
+
+run("Set Measurements...", "area mean integrated redirect=None decimal=2");
+run("Z Project...", "projection=[Max Intensity] all");
+run("8-bit");
+run("Despeckle", "stack");
+run("Gaussian Blur...", "sigma=1 stack");
+run("Subtract Background...", "rolling=50 stack");
+
+run("Duplicate...", "duplicate");
+setAutoThreshold("RenyiEntropy dark");
+//run("Threshold...");
+setOption("BlackBackground", false);
+run("Convert to Mask", "method=RenyiEntropy background=Dark calculate");
+run("Despeckle", "stack");
+run("Watershed", "stack");
+run("Analyze Particles...", "size=0.1-80 add stack");
+close();
+
+// if (isOpen("ROI Manager")) {
+// selectWindow("ROI Manager");
+// run("Close");
+// }
+
+count=roiManager("count"); 
+array=newArray(count); 
+for(i=0; i<count;i++) { 
+array[i] = i; 
+roiManager("Select", i); 
+// Roi.setStrokeColor("Red");
+temp1=floor(255*0.2);
+temp2=floor(255*0.1);
+temp3=floor(255*0.5);
+
+setColor(temp1, temp2, temp3);
+roiManager("draw")
+}
+
+roiManager("Select", array); 
+roiManager("Measure");
+roiManager("Associate", "true");
+roiManager("Delete");
+
+// roiManager("Show All without labels");
+
+
+saveAs("Measurements", dir+name);
+
+//selectWindow("Results"); 
+//run("Close"); 
+//selectWindow("ROI Manager"); 
+//run("Close");
